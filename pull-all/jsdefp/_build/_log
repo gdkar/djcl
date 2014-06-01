@@ -1,0 +1,140 @@
+### Starting build.
+# Target: jsdefp.ml.depends, tags: { extension:ml, file:jsdefp.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules jsdefp.ml > jsdefp.ml.depends # cached
+# Target: error.ml.depends, tags: { extension:ml, file:error.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules error.ml > error.ml.depends # cached
+# Target: ast.ml.depends, tags: { extension:ml, file:ast.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules ast.ml > ast.ml.depends # cached
+# Target: ast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ast.cmo, file:ast.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o ast.cmo ast.ml # cached
+# Target: globals.ml.depends, tags: { extension:ml, file:globals.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules globals.ml > globals.ml.depends # cached
+# Target: globals.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:globals.cmo, file:globals.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o globals.cmo globals.ml # cached
+# Target: lexer.ml.depends, tags: { extension:ml, file:lexer.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -modules lexer.ml > lexer.ml.depends # cached
+# Target: parser.mly.depends, tags: { extension:mly, file:parser.mly, menhir_ocamldep, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/menhir --raw-depend --ocamldep '/usr/bin/ocamlfind ocamldep -modules' parser.mly > parser.mly.depends # cached
+# Target: parser.mly, tags: { extension:mly, file:parser.mly, menhir, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), parser, quiet, traverse, use_menhir }
+/usr/bin/menhir --ocamlc '/usr/bin/ocamlfind ocamlc' --infer parser.mly # cached
+# Target: parser.mli.depends, tags: { extension:mli, file:parser.mli, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules parser.mli > parser.mli.depends # cached
+# Target: parser.cmi, tags: { byte, compile, extension:mli, file:parser.mli, interf, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o parser.cmi parser.mli # cached
+# Target: lexer.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:lexer.cmo, file:lexer.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -o lexer.cmo lexer.ml # cached
+# Target: pretty.ml.depends, tags: { extension:ml, file:pretty.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules pretty.ml > pretty.ml.depends # cached
+# Target: pretty.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:pretty.cmo, file:pretty.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o pretty.cmo pretty.ml # cached
+# Target: error.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:error.cmo, file:error.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o error.cmo error.ml # cached
+# Target: phparser.mly.depends, tags: { extension:mly, file:phparser.mly, menhir_ocamldep, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/menhir --raw-depend --ocamldep '/usr/bin/ocamlfind ocamldep -modules' phparser.mly > phparser.mly.depends
++ /usr/bin/menhir --raw-depend --ocamldep '/usr/bin/ocamlfind ocamldep -modules' phparser.mly > phparser.mly.depends
+File "phparser.mly", line 12, characters 7-31:
+Warning: the token CONSTANT_ENCAPSED_STRING is unused.
+File "phparser.mly", line 39, characters 26-38:
+Warning: the token DOLLAR_CURLY is unused.
+# Target: phpast.ml.depends, tags: { extension:ml, file:phpast.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules phpast.ml > phpast.ml.depends
+# Target: phpast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:phpast.cmo, file:phpast.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o phpast.cmo phpast.ml
+# Target: phparser.mly, tags: { extension:mly, file:phparser.mly, menhir, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), parser, quiet, traverse, use_menhir }
+/usr/bin/menhir --ocamlc '/usr/bin/ocamlfind ocamlc' --infer phparser.mly
++ /usr/bin/menhir --ocamlc '/usr/bin/ocamlfind ocamlc' --infer phparser.mly
+File "phparser.mly", line 12, characters 7-31:
+Warning: the token CONSTANT_ENCAPSED_STRING is unused.
+File "phparser.mly", line 39, characters 26-38:
+Warning: the token DOLLAR_CURLY is unused.
+Warning: 3 states have shift/reduce conflicts.
+Warning: 51 shift/reduce conflicts were arbitrarily resolved.
+File "/usr/share/menhir/standard.mly", line 29, characters 4-4:
+Warning: production option(array_key) -> is never reduced.
+Warning: in total, 1 productions are never reduced.
+# Target: phparser.mli.depends, tags: { extension:mli, file:phparser.mli, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules phparser.mli > phparser.mli.depends # cached
+# Target: phplexer.ml.depends, tags: { extension:ml, file:phplexer.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -modules phplexer.ml > phplexer.ml.depends # cached
+# Target: phparser.cmi, tags: { byte, compile, extension:mli, file:phparser.mli, interf, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o phparser.cmi phparser.mli
+# Target: phproverif.ml.depends, tags: { extension:ml, file:phproverif.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules phproverif.ml > phproverif.ml.depends
+# Target: htmllexer.ml.depends, tags: { extension:ml, file:htmllexer.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -modules htmllexer.ml > htmllexer.ml.depends # cached
+# Target: htmlparser.mly.depends, tags: { extension:mly, file:htmlparser.mly, menhir_ocamldep, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/menhir --raw-depend --ocamldep '/usr/bin/ocamlfind ocamldep -modules' htmlparser.mly > htmlparser.mly.depends # cached
+# Target: htmlast.ml.depends, tags: { extension:ml, file:htmlast.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules htmlast.ml > htmlast.ml.depends # cached
+# Target: htmlast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:htmlast.cmo, file:htmlast.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o htmlast.cmo htmlast.ml # cached
+# Target: htmlparser.mly, tags: { extension:mly, file:htmlparser.mly, menhir, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), parser, quiet, traverse, use_menhir }
+/usr/bin/menhir --ocamlc '/usr/bin/ocamlfind ocamlc' --infer htmlparser.mly # cached
+# Target: htmlparser.mli.depends, tags: { extension:mli, file:htmlparser.mli, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules htmlparser.mli > htmlparser.mli.depends # cached
+# Target: htmlparser.cmi, tags: { byte, compile, extension:mli, file:htmlparser.mli, interf, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o htmlparser.cmi htmlparser.mli # cached
+# Target: htmllexer.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:htmllexer.cmo, file:htmllexer.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -o htmllexer.cmo htmllexer.ml # cached
+# Target: url.ml.depends, tags: { extension:ml, file:url.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules url.ml > url.ml.depends # cached
+# Target: url.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:url.cmo, file:url.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o url.cmo url.ml # cached
+# Target: proverif.ml.depends, tags: { extension:ml, file:proverif.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules proverif.ml > proverif.ml.depends # cached
+# Target: typecheck.ml.depends, tags: { extension:ml, file:typecheck.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules typecheck.ml > typecheck.ml.depends # cached
+# Target: typecheck.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:typecheck.cmo, file:typecheck.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o typecheck.cmo typecheck.ml # cached
+# Target: proverif.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:proverif.cmo, file:proverif.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o proverif.cmo proverif.ml # cached
+# Target: phplexer.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:phplexer.cmo, file:phplexer.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -o phplexer.cmo phplexer.ml
+# Target: phproverif.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:phproverif.cmo, file:phproverif.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o phproverif.cmo phproverif.ml
+# Target: jsdefp.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:jsdefp.cmo, file:jsdefp.ml, implem, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlc -c -package menhirLib -package pcre -package ulex -package unix -o jsdefp.cmo jsdefp.ml
+# Target: ast.cmx, tags: { compile, extension:cmx, extension:ml, file:ast.cmx, file:ast.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o ast.cmx ast.ml # cached
+# Target: globals.cmx, tags: { compile, extension:cmx, extension:ml, file:globals.cmx, file:globals.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o globals.cmx globals.ml # cached
+# Target: parser.ml.depends, tags: { extension:ml, file:parser.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules parser.ml > parser.ml.depends # cached
+# Target: parser.cmx, tags: { compile, extension:cmx, extension:ml, file:parser.cmx, file:parser.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o parser.cmx parser.ml # cached
+# Target: lexer.cmx, tags: { compile, extension:cmx, extension:ml, file:lexer.cmx, file:lexer.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -o lexer.cmx lexer.ml # cached
+# Target: pretty.cmx, tags: { compile, extension:cmx, extension:ml, file:pretty.cmx, file:pretty.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o pretty.cmx pretty.ml # cached
+# Target: error.cmx, tags: { compile, extension:cmx, extension:ml, file:error.cmx, file:error.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o error.cmx error.ml # cached
+# Target: phparser.ml.depends, tags: { extension:ml, file:phparser.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules phparser.ml > phparser.ml.depends
+# Target: phpast.cmx, tags: { compile, extension:cmx, extension:ml, file:phpast.cmx, file:phpast.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o phpast.cmx phpast.ml
+# Target: phparser.cmx, tags: { compile, extension:cmx, extension:ml, file:phparser.cmx, file:phparser.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o phparser.cmx phparser.ml
+# Target: htmlparser.ml.depends, tags: { extension:ml, file:htmlparser.ml, ocaml, ocamldep, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamldep -package menhirLib -package pcre -package ulex -package unix -modules htmlparser.ml > htmlparser.ml.depends # cached
+# Target: htmlast.cmx, tags: { compile, extension:cmx, extension:ml, file:htmlast.cmx, file:htmlast.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o htmlast.cmx htmlast.ml # cached
+# Target: htmlparser.cmx, tags: { compile, extension:cmx, extension:ml, file:htmlparser.cmx, file:htmlparser.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o htmlparser.cmx htmlparser.ml # cached
+# Target: htmllexer.cmx, tags: { compile, extension:cmx, extension:ml, file:htmllexer.cmx, file:htmllexer.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -o htmllexer.cmx htmllexer.ml # cached
+# Target: url.cmx, tags: { compile, extension:cmx, extension:ml, file:url.cmx, file:url.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o url.cmx url.ml # cached
+# Target: typecheck.cmx, tags: { compile, extension:cmx, extension:ml, file:typecheck.cmx, file:typecheck.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o typecheck.cmx typecheck.ml # cached
+# Target: proverif.cmx, tags: { compile, extension:cmx, extension:ml, file:proverif.cmx, file:proverif.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o proverif.cmx proverif.ml # cached
+# Target: phplexer.cmx, tags: { compile, extension:cmx, extension:ml, file:phplexer.cmx, file:phplexer.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, syntax(camlp4o), traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -syntax camlp4o -o phplexer.cmx phplexer.ml
+# Target: phproverif.cmx, tags: { compile, extension:cmx, extension:ml, file:phproverif.cmx, file:phproverif.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o phproverif.cmx phproverif.ml
+# Target: jsdefp.cmx, tags: { compile, extension:cmx, extension:ml, file:jsdefp.cmx, file:jsdefp.ml, implem, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -c -package menhirLib -package pcre -package ulex -package unix -o jsdefp.cmx jsdefp.ml
+# Target: jsdefp.native, tags: { dont_link_with, extension:native, file:jsdefp.native, link, native, ocaml, package(menhirLib), package(pcre), package(ulex), package(unix), program, quiet, traverse, use_menhir }
+/usr/bin/ocamlfind ocamlopt -linkpkg -package menhirLib -package pcre -package ulex -package unix ast.cmx globals.cmx parser.cmx lexer.cmx pretty.cmx error.cmx htmlast.cmx htmlparser.cmx htmllexer.cmx phpast.cmx phparser.cmx phplexer.cmx url.cmx phproverif.cmx typecheck.cmx proverif.cmx jsdefp.cmx -o jsdefp.native
+# Parallel statistics: { count(total): 2(60), max: 2, min: 2, average(total): 2.000(1.033) }
+# Compilation successful.

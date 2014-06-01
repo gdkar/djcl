@@ -1,0 +1,117 @@
+type Memloc.
+type Memval.
+
+table heap(Memloc, Memval).
+
+(** Memory Types **)
+type Undefined.
+type String.
+type Number.
+type Boolean.
+type Function.
+type Object.
+type Array.
+type Field.
+
+table properties(Object, String, Memloc).
+table elements(Array, Number, Memloc).
+
+(* Memory write *)
+fun mem_undefined(Undefined): Memval [data].
+fun mem_string(String): Memval [data].
+fun mem_number(Number): Memval [data].
+fun mem_boolean(Boolean): Memval [data].
+fun mem_function(Function): Memval [data].
+fun mem_object(Object): Memval [data].
+fun mem_array(Array): Memval [data].
+
+(** Constants **)
+fun undefined(): Undefined [data].
+fun undefined_string(): String [data].
+fun undefined_number(): Number [data].
+fun undefined_boolean(): Boolean [data].
+fun undefined_function(): Function [data].
+fun undefined_object(): Object [data].
+fun undefined_array(): Array [data].
+
+fun string_empty(): String [data].
+fun number_zero(): Number [data].
+fun bool_true(): Boolean [data].
+fun bool_false(): Boolean [data].
+
+(** Booleans **)
+fun is_nonzero(Number): Boolean [data].
+fun is_nonempty(String): Boolean [data].
+fun negate(Boolean): Boolean [data].
+fun eq_number(Number, Number): Boolean [data].
+fun geq_number(Number, Number): Boolean [data].
+fun gt_number(Number, Number): Boolean [data].
+fun lt_number(Number, Number): Boolean [data].
+fun leq_number(Number, Number): Boolean [data].
+
+fun equal(Memval, Memval): Boolean
+reduc forall x:Memval, y:Memval; equal(x,x) = bool_true()
+      otherwise forall x:Memval, y:Memval; equal(x,y) = bool_false().
+
+(** Numbers **)
+fun str_to_num(String): Number [data].
+fun add(Number, Number): Number [data].
+fun neg(Number): Number [data].
+fun bitneg(Number): Number [data].
+fun bit_and(Number, Number): Number [data].
+fun bit_or(Number, Number): Number [data].
+fun bit_xor(Number, Number): Number [data].
+fun substract(Number, Number): Number [data].
+fun multiply(Number, Number): Number [data].
+fun divide(Number, Number): Number [data].
+fun modulo(Number, Number): Number [data].
+fun left_shift(Number, Number): Number [data].
+fun right_shift(Number, Number): Number [data].
+fun a_right_shift(Number, Number): Number [data].
+
+(** Strings **)
+fun concat(String, String): String [data].
+fun num_to_str(Number): String [data].
+fun bool_to_str(Boolean): String [data].
+fun escape(String): String [data].
+fun num_left_concat(Number, String): String [data].
+fun num_right_concat(String, Number): String [data].
+reduc str_length(string_empty()) = number_zero().
+
+(** Functions **)
+fun function(channel): Function [data].
+
+fun hmac(String, String): String.
+
+letfun secret(s:String) = 
+       new k:String; k.
+
+free pub:channel.
+
+let attackerHeap() = 
+    (!in(pub,m:Memloc);
+      get heap(=m,v) in
+      out(pub,v)) 
+  | 
+    (!in(pub,(m:Memloc,v:Memval));
+      insert heap(m,v);
+      out(pub,v)).
+
+free curly_open:String.
+free curly_close:String.
+free colon:String.
+free comma:String.
+
+fun JSON_stringify(Object):String.
+reduc forall o:Object;
+      JSON_parse(JSON_stringify(o)) = o.
+
+fun DJSON_stringify(Object):String.
+reduc forall o:Object, pre:Object;
+      DJSON_parse(DJSON_stringify(o),pre) = o.
+
+fun JWE_encrypt(String,String,String): String.
+reduc forall s:String, k:String, pk:String;
+      JWE_decrypt(JWE_encrypt(s, k, pk), k) = s.
+
+

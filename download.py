@@ -23,16 +23,17 @@ while next_url:
     cur_url  = next_url.pop()
     req      = reqs.get(cur_url.geturl())
     seen_url.update([cur_url])
-    _url     = target_dir+cur_url.path
+    _url     = target_dir + cur_url.path
+    print ( _url )
     if _url.endswith('/'):
         _url = _url[:-1]+'.list'
-    print ( _url )
+    if not os.path.exists(_url):
 
-    descend(pth.dirname(_url))
-    os.chdir(pth.dirname(_url))
-    f = open(pth.basename(_url),'w')
-    f.write(req.content)
-    f.close()
+        descend(pth.dirname(_url))
+        os.chdir(pth.dirname(_url))
+        f = open(pth.basename(_url),'w')
+        f.write(req.content)
+        f.close()
 #    content [cur_url.path ] = req.content
 #    _file = open (pth.join(target_dir,cur_url.path.replace(r'/','_')+'.file'),'wb+')
 #    _file.write(req.content)
@@ -42,8 +43,8 @@ while next_url:
         try:
             par = html.fromstring(req.content,req.url)
             par.make_links_absolute()
-            new_urls =  [urlparse.urlparse(x.attrib['href']) for x in par.xpath('//a') ]
-            new_urls =  set( filter( lambda x: x.netloc == init_url.netloc and x.path.startswith(init_url.path),new_urls))
+            new_urls =  map(urlparse.urlparse, par.xpath('//a/@href')+par.xpath('//script/@src')) 
+            new_urls =  set( filter( lambda x: x.netloc == init_url.netloc ,new_urls))
             new_urls.difference_update( seen_url )
 #            print ( cur_url.path +':')
 #            print ( '\t'.join(map(lambda x: x.path,new_urls)))
