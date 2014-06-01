@@ -1,0 +1,142 @@
+free var_x:Memloc.
+free str_1:String.
+free str_2:String.
+free str_3:String.
+free str_4:String.
+free str_5:String.
+
+event Send(String).
+event Accept(String,String,Boolean).
+event Leaked(String,Boolean).
+query x:String; event(Leaked(x,bool_true())).
+query x:String; event(Send(x)).
+query x:String,y:String; event(Accept(x,y,bool_true())).
+query x:String,y:String; event(Accept(x,y,bool_true())) ==> event(Send(x)).
+process
+(new fun_1:channel;
+(!in(fun_1, (ret_1:channel));
+
+new var_mac_key:Memloc;
+insert heap(var_mac_key,mem_string(secret(str_1)));
+new var_mac:Memloc;
+new fun_2:channel;
+(!in(fun_2, (ret_2:channel,arg_x:String));
+new var_x:Memloc;
+insert heap(var_x,mem_string(arg_x));
+get heap(=var_x, mem_string(val_1)) in
+event Send(val_1);
+get heap(=var_x, mem_string(val_2)) in
+get heap(=var_mac_key, mem_string(val_3)) in
+out(ret_2,hmac(val_2,val_3));
+0)|insert heap(var_mac,mem_function(function(fun_2)));
+new var_verify:Memloc;
+new fun_3:channel;
+(!in(fun_3, (ret_3:channel,arg_x:String,arg_t:String));
+new var_x:Memloc;
+insert heap(var_x,mem_string(arg_x));
+new var_t:Memloc;
+insert heap(var_t,mem_string(arg_t));
+new var_res:Memloc;
+get heap(=var_x, mem_string(val_4)) in
+get heap(=var_mac_key, mem_string(val_5)) in
+get heap(=var_t, mem_string(val_6)) in
+insert heap(var_res,mem_boolean(equal(mem_string(hmac(val_4,val_5)),mem_string(val_6))));
+get heap(=var_x, mem_string(val_7)) in
+get heap(=var_t, mem_string(val_8)) in
+get heap(=var_res, mem_boolean(val_9)) in
+event Accept(val_7,val_8,val_9);
+get heap(=var_res, mem_boolean(val_10)) in
+let val_11=(if val_10=bool_true() then str_2 else str_3) in
+out(ret_3,val_11);
+0)|insert heap(var_verify,mem_function(function(fun_3)));
+new var_guess:Memloc;
+new fun_4:channel;
+(!in(fun_4, (ret_4:channel,arg_k:String));
+new var_k:Memloc;
+insert heap(var_k,mem_string(arg_k));
+new var_res:Memloc;
+get heap(=var_k, mem_string(val_12)) in
+get heap(=var_mac_key, mem_string(val_13)) in
+insert heap(var_res,mem_boolean(equal(mem_string(val_12),mem_string(val_13))));
+get heap(=var_k, mem_string(val_14)) in
+get heap(=var_res, mem_boolean(val_15)) in
+event Leaked(val_14,val_15);
+get heap(=var_res, mem_boolean(val_16)) in
+let val_17=(if val_16=bool_true() then str_2 else str_3) in
+out(ret_4,val_17);
+0)|insert heap(var_guess,mem_function(function(fun_4)));
+new var__:Memloc;
+new fun_5:channel;
+(!in(fun_5, (ret_5:channel,arg_s:String));
+new var_s:Memloc;
+insert heap(var_s,mem_string(arg_s));
+new var_o:Memloc;
+get heap(=var_s, mem_string(val_18)) in
+let concat(concat(concat(=curly_open, concat(concat(escape(=str_4), =colon), escape(val_19))), concat(=comma, concat(concat(escape(=str_5), =colon), escape(val_20)))), =curly_close)=val_18 in
+new obj_1:Object;
+new mem_1:Memloc;
+insert heap(mem_1, mem_string(val_19));
+insert properties(obj_1, str_4, mem_1);
+new mem_2:Memloc;
+insert heap(mem_2, mem_string(val_20));
+insert properties(obj_1, str_5, mem_2);
+insert heap(var_o,mem_object(obj_1));
+get heap(=var_o, mem_object(val_35)) in
+get properties(=val_35, =str_5, mem_8) in
+get heap(=mem_8, mem_string(val_36)) in
+get heap(=var_guess, mem_function(val_21)) in
+get heap(=var_o, mem_object(val_22)) in
+get properties(=val_22, =str_4, mem_3) in
+get heap(=mem_3, mem_string(val_23)) in
+let function(fun_6)=val_21 in
+new ret_6:channel;
+out(fun_6, (ret_6,val_23));
+in(ret_6, ret_7:String);
+get heap(=var_o, mem_object(val_32)) in
+get properties(=val_32, =str_4, mem_7) in
+get heap(=mem_7, mem_string(val_33)) in
+get heap(=var_mac, mem_function(val_24)) in
+get heap(=var_o, mem_object(val_25)) in
+get properties(=val_25, =str_5, mem_4) in
+get heap(=mem_4, mem_string(val_26)) in
+let function(fun_7)=val_24 in
+new ret_8:channel;
+out(fun_7, (ret_8,val_26));
+in(ret_8, ret_9:String);
+get heap(=var_verify, mem_function(val_27)) in
+get heap(=var_o, mem_object(val_28)) in
+get properties(=val_28, =str_5, mem_5) in
+get heap(=mem_5, mem_string(val_29)) in
+get heap(=var_o, mem_object(val_30)) in
+get properties(=val_30, =str_4, mem_6) in
+get heap(=mem_6, mem_string(val_31)) in
+let function(fun_8)=val_27 in
+new ret_10:channel;
+out(fun_8, (ret_10,val_29,val_31));
+in(ret_10, ret_11:String);
+let val_34=(if equal(mem_string(val_33),mem_string(string_empty))=bool_true() then ret_9 else ret_11) in
+let val_37=(if equal(mem_string(val_36),mem_string(string_empty))=bool_true() then ret_7 else val_34) in
+out(ret_5,val_37);
+0)|insert heap(var__,mem_function(function(fun_5)));
+new fun_9:channel;
+(!in(fun_9, (ret_12:channel, arg_s:Memval));
+let mem_string(s)=arg_s in
+(new var_s:Memloc;
+insert heap(var_s,arg_s);
+get heap(=var__, mem_function(val_38)) in
+get heap(=var_s, mem_string(val_39)) in
+let function(fun_10)=val_38 in
+new ret_13:channel;
+out(fun_10, (ret_13,val_39));
+in(ret_13, ret_14:String);
+out(ret_12,ret_14);
+0)
+else
+out(ret_12, undefined()))|
+out(ret_1,function(fun_9));
+0)|let function(fun_11)=function(fun_1) in
+new ret_15:channel;
+out(fun_11, (ret_15));
+in(ret_15, ret_16:Function);
+insert heap(var_x, mem_function(ret_16));
+0) | attackerHeap()

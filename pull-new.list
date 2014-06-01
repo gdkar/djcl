@@ -1,0 +1,574 @@
+<!doctype html>
+<html>
+
+<head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+ <title>Defensive JavaScript home</title>
+ <script src="lib/codemirror.js" type="text/javascript"></script>
+ <link rel="stylesheet" href="../lib/codemirror.css" type="text/css" />
+ <link rel="stylesheet" href="style.css" type="text/css" />
+
+<script src="/djcl/encoding.js"></script>
+<script src="/djcl/utf8.js"></script>
+<script src="/djcl/djson.js"></script>
+<script src="/djcl/hashing.js"></script>
+<script src="/djcl/aes.js"></script>
+<script src="/djcl/bn.js"></script>
+<script src="/djcl/rsa.js"></script>
+<script src="/djcl/jose.js"></script>
+<script src="asn.js"></script>
+
+ <script src="mode/htmlmixed/htmlmixed.js"></script>
+ <script src="mode/xml/xml.js"></script>
+ <script src="mode/javascript/javascript.js" type="text/javascript"></script>
+ <script src="mode/css/css.js"></script>
+ <script src="mode/clike/clike.js"></script>
+ <script src="mode/php/php.js" type="text/javascript"></script>
+
+ <script type="text/javascript" src="jquery.js"></script>
+ <script type="text/javascript" src="scripts.js"></script>
+ <script type="text/javascript">
+
+cat[0] = 'basic';
+ex[0]=[];
+ex[0][0] = 'Fibonacci.js';
+ex[0][1] = 'Monomorphism.js';
+ex[0][2] = 'Recursive_type.js';
+ex[0][3] = 'Type_conversion.js';
+
+cat[1] = 'djcl';
+ex[1]=[];
+ex[1][0] = 'aes.js';
+ex[1][1] = 'bn.js';
+ex[1][2] = 'encoding.js';
+ex[1][3] = 'hashing.js';
+ex[1][4] = 'jose.js';
+ex[1][5] = 'rsa.js';
+ex[1][6] = 'utf8.js';
+ex[1][7] = 'utf8_fast.js';
+
+cat[2] = 'exceptions';
+ex[2]=[];
+ex[2][0] = 'Error_flow.js';
+ex[2][1] = 'Exception_inference.js';
+
+cat[3] = 'objects';
+ex[3]=[];
+ex[3][0] = 'Methods.js';
+ex[3][1] = 'Subtyping.js';
+ex[3][2] = 'With.js';
+
+cat[4] = 'proverif';
+ex[4]=[];
+
+cat[5] = 'string';
+ex[5]=[];
+ex[5][0] = 'Bound_accessor.js';
+ex[5][1] = 'Char_accessor.js';
+ex[5][2] = 'Dynamic_accessor.js';
+ex[5][3] = 'String_inference.js';
+ex[5][4] = 'Substring.js';
+ </script>
+</head>
+<body>
+
+<h1>Defensive JavaScript</h1>
+
+<div id="tabs">
+	<a href="javascript:tab('intro');">Introduction</a>
+	<a href="javascript:tab('djcl');">Crypto Library</a>
+	<a href="javascript:tab('dss');">Script Server</a>
+	<a href="javascript:tab('typechecker');">Type Checker</a>
+</div>
+
+<div id="intro">
+<h2>Introduction</h2>
+
+<p>
+ DJS is a <i>defensive</i> subset of JavaScript: code in this
+ subset runs independently of the rest of the JavaScript environment.
+ When propertly wrapped, DJS code can run safely on untrusted pages
+ and keep secrets such as decryption keys.
+</p>
+
+<p>
+ DJS is especially useful to write security APIs that may run alongside
+ other untrusted scripts, for instance an OAuth library such
+ as the one used by "Login with Facebook", or a Node.js program that includes
+ untrusted modules.
+</p>
+
+<p>
+ Techical details can be found in our USENIX Security 2013 paper <a href="usenixsec13.pdf">Language-Based Defenses Against Untrusted Browser Origins</a>.
+ Our security properties do rely on assumptions on JavaScript implementations that <a href="http://capec.mitre.org/data/definitions/111.html">have been violated</a> in the past due to bugs and <a href="http://wiki.ecmascript.org/doku.php?id=harmony%3aproxies">may not hold in ECMA Script 6</a>.
+ We also provide <a href="attacks.pdf">details about attacks and their disclosure</a> on security components that may be loaded in untrusted pages.
+</p>
+
+<p>
+ In addition, the fragment of DJS without loops and arrays, but extended with our cryptographic library DJCL, can be translated into
+ <a href="http://prosecco.gforge.inria.fr/personal/bblanche/proverif/">ProVerif spi-calculus processes</a>,
+ in particular, it can generate the client processes for the <a href="http://prosecco.gforge.inria.fr/webspi/">WebSpi</a>
+ library automatically to verify the DJS implementations of complex web protocols.
+</p>
+
+<p>
+ Finally, because DJS is proved to run independently of the JavaScript environment, it provides a more expressive subset for compilation
+ to native code than the existing best effort, <a href="http://asmjs.org" target="_blank">asm.js</a>.<br />
+ <b>Current work:</b> we now compile statically typed JavaScript (similar to DJS) to asm.js.
+</p>
+
+<h3>Contact information</h3>
+
+<p>
+If you have questions, comments or find a bug or attack, please contact <a href="http://antoine.delignat-lavaud.fr" target="_blank">Antoine Delignat-Lavaud</a>, <a href="http://moscova.inria.fr/~karthik/Welcome.html" target="_blank">Karthikeyan Bhargavan</a> or <a href="http://www.doc.ic.ac.uk/~maffeis/" target="_blank">Sergio Maffeis</a>.
+</p>
+
+<h3>Frequently asked questions</h3>
+
+Following our USENIX Security presentation, we have received questions that may be of public interest.
+<ul>
+<li>
+In the paper, you claim you can embed DJCL in a 2KB bookmarklet. How is that possible?
+<blockquote>
+<b>A:</b> We claim we can trim down DJCL to fit in a bookmarklet. There are various ways to achieve this, the most space efficient being to use hexadecimal strings internally. For instance, <a href="djcl/extra/bm.js">this sample bookmarklet</a> can do HMAC-SHA1 with a secret key (assuming the input is an hexadecimal string), and compresses to <a href="djcl/extra/bm_minify.js">1868 bytes</a>. Encryption is also possible with some effort.
+</blockquote>
+</li>
+<li>
+Isn't it possible to redefine Function.prototype.call, Object.constructor, Array.constructor and tamper with literal function calls, objects and arrays?
+<blockquote>
+<b>A:</b> If you redefine Function.prototype.call in the Chrome or Firefox console, it may seem like function calls are tampered - however, this is only due to the way the console tool is implemented - it itself is written as a JavaScript wrapper. As for the object and array constructors, the ECMA specification clearly states that the built in constructor should always be used for literal objects and arrays, however, some browsers didn't implement this behavior until 2008 when cross-origin JSON hijacking attacks have been mounted by tampering those constructors.
+</blockquote>
+</li>
+<li>
+Is it possible for two different scripts on the same untrusted origin to authenticate and communicate securely?
+<blockquote>
+<b>A:</b> Yes, you can even implement a TLS channel between two scripts provided they embed a shared secret or user-specific public keys for authentication.
+As always when dealing with JavaScript cryptography, key management is the biggest issue - your script server must act as a trust anchor and
+long term secret manager. Note that in general, it is easier and more efficient to use postMessage between frames from trusted origins instead.
+</blockquote>
+</li>
+<li>
+How do you defend against side channels?
+<blockquote>
+<b>A:</b> We only focus on semantic language safety, and if you use the translation to ProVerif, the correctness of the protocol implementation.
+There are many side channels available to a same-origin attacker - the most obvious ones being time and memory. In SJCL, we sometimes try to mitigate
+those channels - for instance, in CCM tag validation. However, we do not have any formal proof of robustness against any side-channel attacker - furthermore,
+user-written DJS code must also take into account this risk. For instance, use the AES.ctEq function for constant time string comparison.
+</blockquote>
+</li>
+<li>
+Should I use DJS for my application?
+<blockquote>
+<b>A:</b> If you are not sure whether you would benefit from using DJS for your application, you should probably not try to write DJS code.
+There are few sensitive applications that need to defend against same origin attackers, and good security knowledge is required to write (and verify)
+them properly. There are exceptions - for instance, you may want to write a CSRF protection system that is safe against an XSS attacker. For those
+frequent use case, we will ultimately provide our own verified, easy to use solutions.
+</blockquote>
+</li>
+</ul>
+</div>
+
+<div id="djcl" class="hid">
+<h2>DJS Crypto Library</h2>
+<p>
+ DJCL is a complete cryptographic library written in DJS, based on <a href="http://crypto.stanford.edu/sjcl/" target="_blank">SJCL</a> and <a href="http://www-cs-students.stanford.edu/~tjw/jsbn/" target="_blank">JSBN</a>, two popular JavaScript libraries for symmetric and asymmetric encryption. It supports AES-256 in CBC and CCM mode, HMAC on top of SHA1 or SHA-256, RSA encryption and signature with OAEP/PSS or PKCS#1 v1.5 padding.
+ <br /><br />
+ You can try to tamper base object prototypes and default functions on the <a href="/djcl/demo.htm">demo page</a> and verify the independance of the cryptograpic compoutations.
+ <br /><b>N.B.</b> We do not guarantee robustness against side-channel attacks at this time.
+</p>
+
+<p>
+ <a href="/djcl/">Current version of DJCL</a> - 
+ <a href="/djcl/doc">Documentation</a>
+</p>
+
+<p>
+Note that the various DJCL components should be loaded together inside a DJS wrapper to be secure against a same origin attacker. See the <a href="javascript:tab('dss');">Script Server</a> tab for a demo of how to embed DJCL and encryption keys into a security component.
+</p>
+
+<script src="djcl_demo.js"></script>
+<h3>Encoding and transcoding</h3>
+
+<b>Input encoding:</b> <select class="encsel" id="eie" onchange="enc();"></select> &nbsp;
+<b>Output encoding:</b> <select class="decsel" id="eoe" onchange="enc();"></select> &nbsp;
+<input type="button" value="Swap" onclick="swapenc();" />
+<table width="100%" border="0" cellspacing="10">
+<tr>
+<td width="50%"><textarea placeholder="Input text" id="ein" onkeyup="enc()"></textarea></td>
+<td width="50%"><textarea placeholder="Result" id="eout" disabled="disabled"></textarea></td>
+</tr>
+</table>
+
+<h3>Hashing</h3>
+
+<b>Algorithm:</b> <select id="hf" onchange="hash();"><option value="0" selected="selected">SHA-256</option><option value="1">SHA1</option></select> &nbsp;
+<b>Input encoding:</b> <select class="encsel" id="hie" onchange="hash();"></select> &nbsp;
+<b>Output encoding:</b> <select class="decsel" id="hoe" onchange="hash();"></select>
+<br />
+<input type="checkbox" onchange="hash();" name="hmac" id="hmac" /><b><label for="hmac">HMAC</label></b>
+<input type="text" placeholder="MAC key" id="mk" size="60" onkeyup="hash();" /><select id="mke" class="encsel" onchange="hash();"></select>
+<table width="100%" border="0" cellspacing="10">
+<tr>
+<td width="50%"><textarea placeholder="Input to hash" id="hin" onkeyup="hash();"></textarea></td>
+<td width="50%"><textarea placeholder="Digest" id="hout" disabled="disabled"></textarea></td>
+</tr>
+</table>
+
+<h3>AES encryption</h3>
+
+<p>
+Key: <input type="text" size="80" maxlength="64" id="key" value="0000000000000000000000000000000000000000000000000000000000000000" />
+<select class="encsel" id="kie"></select>
+<input type="button" value="Random" onclick="rnd(32, 'key', 'kie');" />
+<br />
+IV:&nbsp;&nbsp; <input type="text" size="40" maxlength="32" id="iv" value="00000000000000000000000000000000" />
+<select class="encsel" id="iie"></select>
+<input type="button" value="Random" onclick="rnd(16, 'iv', 'iie');" />
+</p>
+
+<input type="radio" onchange="crypt();" name="em" value="1" id="cbc" /><b><label for="cbc">CBC (PKCS#5 padding)</label></b><br />
+<input type="radio" onchange="crypt();" name="em" value="0" checked="checked" id="ccm" /><b><label for="ccm">CCM</label></b> &nbsp;
+
+<input type="text" placeholder="(optional authenticated data)" id="ad" size="60" onkeyup="crypt();" /><select id="aie" class="encsel" onchange="crypt();"></select> &nbsp;
+
+Tag length: <select id="tl" onchange="crypt();"><option value="4">4</option><option value="6">6</option><option value="8" selected="selected">8</option>
+<option value="10">10</option><option value="12">12</option><option value="14">14</option><option value="16">16</option></select>
+
+<br />
+Direction:
+ <input type="radio" id="encr" name="encr" onchange="swapc();" checked="checked" /> <label for="encr">encrypt</label>
+ <input type="radio" id="decr" name="encr" onchange="swapc();" /> <label for="decr">decrypt</label> &nbsp;
+
+Input encoding: <select id="cie" class="encsel" onchange="crypt();"></select> &nbsp;
+Output encoding: <select id="coe" class="decsel" onchange="crypt();"></select>
+
+<table width="100%" border="0" cellspacing="10">
+<tr>
+<td width="50%"><textarea placeholder="Input data" id="cin" onkeyup="crypt()"></textarea></td>
+<td width="50%"><textarea placeholder="Output data" id="cout" disabled="disabled"></textarea></td>
+</tr>
+</table>
+
+<h3>RSA encryption and signature</h3>
+
+<b>PKCS#1 Private key</b> (generate one with openssl genrsa)
+
+<p align="center">
+<textarea placeholder="PKCS#1 Private key" id="pk" style="height:150px;">-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQDSbCFDl5kOdzPU0WY5hsIgnOE788JjktUu/qqDbtebr6J2Tj5s
+4QZsgFMu/QXIdkK/qEFJ3kkdJ3MPrEH8ZPkqq2bOLVAC+pWZ9oMWy3ke1NNbtqPb
+xGMXIfPD8rfNn4a8vXhoiJuyLn2hSENw14qBCLn7o8NaNvXehP7IWi/QHwIDAQAB
+AoGAO6O4Hd9G20m/4A7lqWJffTzZvdNOAkjosWQu0gfFhnPWWS++E8AHwRLyALxo
+OjQCoS3AK36cPG4k94k8Ppwj3odMbRMyTMG70ZB1+mXK2OXShdIyFZ3Oa/9/kBmh
+CKZT/6bV3Zr8/Ml+KqrCjm8QCntNLPYkHAo2VB+Er4QhTeECQQD4g8oNUWNbvIrK
+bfT1x9GUPUxe53JYt1D1SJiwL7ApiR6LnoLHw5ApPJUZJxaHngDV8e+WnzY2luLt
+jbwcOnaPAkEA2MKfk7PtCIiqOq8XqrQI7QUz3momW+rs/9eJ5eMyPTa+laqzsv++
+z7KxBHBPUcchX6yMZf4WDLbvRck89rxVcQJACJiudZV6JWM5PdVd4t6dnk4chS/m
+YbE9qK5xMa8EnfszRkseZQCbzQFeevdCLUDG8J+k1QX+3xaLFQKRHjzbewJAHC3x
+IPqbLijWOJrasM6G+olanOef5QM9nGUhAEnxFhQv4rU2d2bYH5hTewg+x5rjs9Ry
+zC+kHjMKGEB5NHp3gQJBAIWCIuTG7lgQjA3DiY+lOWgBH4CQbt1z0sKaQBpTl45C
+E2g/H3V4oJhpxlosAfqlIV8GKfyar3MLXSD+0/YsdW4=
+-----END RSA PRIVATE KEY-----</textarea><br />
+<input type="button" onclick="loadpk();" value="Parse Key" />
+</p>
+
+<p>
+<table width="100%">
+<tr><th colspan="2" align="center">Key details</th></tr>
+<tr>
+ <td width="130">Modulus</td><td><input type="text" disabled="disabled" id="pkn" style="width:100%" /></td>
+</tr>
+<tr>
+ <td>Public exponent</td><td><input type="text" disabled="disabled" id="pke" style="width:100%" /></td>
+</tr>
+<tr>
+ <td>Private exponent</td><td><input type="text" disabled="disabled" id="pkd" style="width:100%" /></td>
+</tr>
+<tr>
+ <td>First prime p</td><td><input type="text" disabled="disabled" id="pkp" style="width:100%" /></td>
+</tr>
+<tr>
+ <td>Second prime q</td><td><input type="text" disabled="disabled" id="pkq" style="width:100%" /></td>
+</tr>
+<tr>
+ <td>d mod p</td><td><input type="text" disabled="disabled" id="pkdmp1" style="width:100%" /></td>
+</tr>
+<tr>
+ <td>d mod q</td><td><input type="text" disabled="disabled" id="pkdmq1" style="width:100%" /></td>
+</tr>
+<tr>
+ <td>q^-1 mod p</td><td><input type="text" disabled="disabled" id="pkiqmp" style="width:100%" /></td>
+</tr>
+</table>
+</p>
+
+<b>Encryption (OAEP padding)</b> &nbsp;
+<input type="text" placeholder="Optional encryption label" id="lbl" size="30" onkeyup="rsae();" />
+ <select class="encsel" id="relie" onchange="rsae();"></select>
+
+Hash function <select id="reh" onchange="rsae();">
+<option value="0">SHA1</option><option value="1" selected="selected">SHA-256</option></select>
+<br />
+<input type="radio" id="ree" name="red" value="0" checked="checked" onchange="swapre();" /> <label for="ree">encrypt</label>
+<input type="radio" id="red" name="red" value="1" onchange="swapre();" /> <label for="red">decrypt</label> &nbsp;
+
+Input encoding <select id="reie" class="encsel" onchange="rsae();"></select> &nbsp;
+Output encoding <select id="reoe" class="decsel" onchange="rsae();"></select> &nbsp;
+<br />
+
+<table width="100%" border="0" cellspacing="10">
+<tr>
+<td width="50%">
+ <textarea id="rein" placeholder="Input data" onkeyup="rsae();"></textarea>
+</td>
+<td width="50%"><textarea id="reout" disabled="disabled" placeholder="Result"></textarea></td>
+</tr>
+</table>
+
+<b>Signature</b> &nbsp;
+ Input encoding <select id="rsie" class="encsel" onchange="rsas();"></select> &nbsp;
+ Output encoding <select id="rsoe" class="decsel" onchange="rsas();"></select> &nbsp;
+ Hash function <select id="rsh" onchange="rsas();"><option value="0">SHA1</option><option value="1" selected="selected">SHA-256</option></select>
+
+<br />
+<input type="radio" name="rsm" id="rspkcs" onchange="rsas();" /> <label for="rspkcs">PKCS#1v1.5 padding</label>
+
+<br />
+<input type="radio" name="rsm" id="rspss" checked="checked" onchange="rsas();" /> <label for="rspss">PSS padding</label> &nbsp;
+<input type="text" size="50" id="rssalt" placeholder="Optional salt" onkeyup="rsas();" /><select class="encsel" id="rssie"></select>
+<br />
+<input type="radio" name="rsm" id="rsjwt" onchange="rsas();" /> <label for="rsjwt">JWT-RS256 (JSON Web Token)</label>
+
+<table width="100%" border="0" cellspacing="10">
+<tr><td><textarea id="rsin" placeholder="Data to sign" onkeyup="rsas();"></textarea></td></tr>
+</table>
+<div style="margin-top:-10px;">
+Action:
+<input onchange="swaprs();" type="radio" name="rso" id="rss" checked="checked" /> <label for="rss">sign</label>
+<input onchange="swaprs();" type="radio" name="rso" id="rsv" /> <label for="rsv">check signature</label> &nbsp;
+</div>
+<table width="100%" border="0" cellspacing="10">
+<tr><td><textarea id="rsout" placeholder="Signature" disabled="disabled" style="height:32px;" onkeyup="rsas();"></textarea></td></tr>
+</table>
+
+</div>
+
+<div id="dss" class="hid">
+<h2>Defensive Script Server</h2>
+
+<h3>How it works</h3>
+
+<p>
+Defensive scripts must be loaded from a secure isolated origin to preserve
+source secrecy and other security properties. The primary reason to use
+defensive scripts is to keep secrets, such as encryption keys, even
+when loaded into an attacker's page. The purpose of a defensive script
+server is to embed keys and entropy into the script and making sure that
+the origin it is being loaded into is authenticated.
+</p>
+
+<p>
+We implement a demonstration script server both to serve our examples and
+be used as a trusted third party script server, where one can register scripts
+for his own origin with a public key.
+</p>
+
+<p>
+The source code of our defensive script server is available at
+<a href="https://dss.defensivejs.com">https://dss.defensivejs.com</a>.
+</p>
+
+<h3>Example use</h3>
+
+<p>
+We have registered www.defensivejs.com on the defensive script server at
+<b>dss.defensivejs.com</b> to serve a script that retrieves the time in Los Angeles
+from the host page's server.
+This script must authenticate the origin it is being loaded into; there are several
+ways of doing this, one of the safest is to use the CORS-based
+encrypted AJAX method described in the USENIX Security paper.</p>
+
+<p> The script is loaded using:
+ <b>&lt;script src="https://dss.defensivejs.com/?script=1"&gt;&lt;/script&gt;</b>.
+The security goal for this script is that the server time will only be released on
+www.defensivejs.com - trying to load the same script on any other origin must fail,
+and no other script may be able to tamper the displayed time assuming the <b>alert()</b>
+function is not tampered (however, other scripts may cause the AJAX call to fail).
+</p>
+
+<p>It is recommended to use your web console (F12) to track the HTTP requests
+and scripts loaded from the example.</p>
+
+<p>
+<center><i>Registered JavaScript code</i></center>
+<textarea id="ejs" style="width:100%;height:120px">/** Defensive part (body of defensive() function) **/
+ var so = {iv:"", e:"", hs:"", hm:""};
+ if(input == "")
+  return rsa.encrypt(encoding.hstr2astr(hostKey), publicKey);
+
+ hashing.hmac_hash = hashing.sha256;
+ if(!DJSON.parse(input, so, {type:'object', props:[
+  {name: "iv", value: {type: "string", props:[]}},
+  {name: "e", value: {type: "string", props:[]}},
+  {name: "hs", value: {type: "string", props:[]}},
+  {name: "hm", value: {type: "string", props:[]}}
+ ]}) || hashing.HMAC(hashing.HMAC(encoding.hstr2astr(so.hs),
+ encoding.hstr2astr(hostKey)), so.e) != so.hm)
+  return "FAILED";
+
+ aes.setKey(encoding.hstr2astr(hostKey));
+ return aes.CBC(encoding.base64_decode(so.e),
+   encoding.base64_decode(so.iv), true);
+
+/** Outer code (functionality can be distrupted) **/
+var e = defensive('');
+_xhr.open('GET', 'dss.php?getTime='+e, 1);
+_xhr.onload = function(){alert(defensive(_xhr.responseText+''))};
+_xhr.send();</textarea>
+</p>
+
+<p>
+<center><i>Server-side code</i></center>
+<textarea id="ephp" style="width:100%;height:120px">&lt;?php
+if(isset($_GET['getTime']))
+{
+ require_once "Crypt/RSA.php";
+ require_once "Crypt/AES.php";
+
+ $rsa = new Crypt_RSA();
+ $rsa-&gt;setHash("sha256");
+ $rsa-&gt;setMGFHash("sha256");
+ $t = pack("H*", $_GET['getTime']);
+
+ $rsa-&gt;loadKey("-----BEGIN RSA PRIVATE KEY-----"); // ...
+ $r = $rsa-&gt;decrypt($t);
+ if(strlen($r) != 32) die;
+
+ $cipher = new Crypt_AES();
+ $cipher-&gt;setKey($r);
+ $iv = openssl_random_pseudo_bytes(16);
+ $hs = openssl_random_pseudo_bytes(16);
+ $cipher-&gt;setIV($iv);
+
+ date_default_timezone_set('America/Los_Angeles');
+ $text = "The time in Los Angeles is ".date('l jS \of F Y h:i:s A T');
+ $e = base64_encode($cipher-&gt;encrypt($text));
+
+ die(json_encode(array("iv"=&gt;base64_encode($iv),"e"=&gt;$e, "hs"=&gt;bin2hex($hs),
+   "hm"=&gt;hash_hmac("sha256",$e, hash_hmac("sha256", $r, $hs)))));
+}
+</textarea>
+</p>
+
+<p style="text-align:center">
+<input type="button" value="Load time example" onclick="time();" />
+<input type="button" value="View source of loaded code" onclick="window.location='https://dss.defensivejs.com/?script=1';" />
+</p>
+
+<h3>Use it on your own website</h3>
+
+<b>Step 1: origin registration</b>
+<p>
+You must first register your website. First, generate the private key offline using
+<b>openssl genrsa -out key.pem 2048</b>. Export the public key using
+<b>openssl rsa -in key.pem -pubout -out pub.pem</b>.
+Finally, put the public key on the webserver where you wish to load your defensive script.
+Enter the URL of the public key below to complete registration of your origin, note that
+it must include the protocol, domain and port as they would appear in the Origin header.
+Note that if the origin was already registered it will update the public key.
+
+<center>
+<input type="text" size="80" id="pkurl" placeholder="https://domain/path/pub.pem" />
+<input type="button" value="Register origin" onclick="regorigin(document.getElementById('pkurl').value);" />
+</center>
+</p>
+
+<b>Step 2: Script registration</b>
+
+<p>
+Origin: <input type="text" id="org" size="60" placeholder="https://domain" />
+If you want to update a script enter its ID: <input type="text" size="4" maxlength="4" id="uid" /><br />
+<input type="checkbox" id="utf8" /> <label for="utf8">This script requires the UTF-8 capable DJCL (needs an extra 200KB to load).</label><br />
+<textarea id="ds" style="width:100%; height: 70px;" placeholder="Enter the script to register here">// Defensive script to register
+// Variables in scope: input (of defensive script),
+// DJCL objects (encoding, rsa, aes), origin, hostKey, sessionKey, publicKey</textarea><br />
+<textarea id="ds2" style="width:100%; height: 70px;" placeholder="Enter the outer script">// Outer (non defensive) script
+// Variables in scope: _xhr (XMLHttpRequest instance), defensive</textarea><br />
+<textarea id="priv" style="width:100%; height: 70px;" placeholder="Enter the private key for your origin in this field. It is only used to sign the script before it is submitted"></textarea>
+<center><input type="button" value="Register script" onclick="register();" /></center>
+</p>
+</div>
+
+<div id="typechecker" class="hid">
+<h2>DJS Type Inference</h2>
+
+<form action="/" method="post">
+<div>
+<b>Load example:</b> &nbsp;
+Category: <select id="cat" onchange="catchange(this.value)"></select> &nbsp;
+File: <select id="ex"></select> &nbsp;
+<input type="button" value="Load" onclick="loadex();">
+</div>
+
+<fieldset style="margin-bottom: 6px;padding-bottom:0px">
+<legend>Processing options</legend>
+<p style="margin-top:0px">
+Action type:
+ <input type="radio" name="type" value="0" id="tc" checked="checked" />
+ <label for="tc">Typecheck</label>
+ <input type="radio" name="type" value="1" id="pp" />
+ <label for="pp">Pretty Print</label>
+ <input type="radio" name="type" value="2" id="pv" />
+ <label for="pv">PV model</label>
+ &nbsp;
+ <input type="button" value="Execute" onclick="typecheck();" />
+</p>
+
+<p>
+<input id="cl" type="checkbox" name="closed" value="1" />
+<label for="cl">Closed program (no free variable)</label>
+<br />
+<input id="sc" type="checkbox" name="sub" value="1" />
+<label for="sc">Show infered types of all sub expressions</label>
+<br />
+<input id="vc" type="checkbox" name="verb" value="1" />
+<label for="vc">Enable verbose output</label>
+</p>
+</fieldset>
+
+<div>
+<b>Input script:</b>
+<br />
+<textarea name="input" style="width:100%; height:250px;" id="jsi"></textarea>
+
+<b>Result:</b>
+<br />
+<textarea style="width:100%;height:200px;" id="res"></textarea>
+</form>
+</div>
+
+<p>Source code available <a href="/jsdefp/">here</a>.</p>
+
+<p>
+Notes: statements all have type undefined. Free variables represent the minimal typing environment in which the input typechecks.<br />
+Translation to spi-calculus uses features introduced in version 1.87b of ProVerif and does not cover loops. Library calls should be prefixed by _lib and added to djcl.pvl if required.
+</p>
+</div>
+
+<div id="credits">
+<table width="100%"><tr>
+<td width="50%" align="center">
+<a href="http://prosecco.inria.fr/" target="_blank">
+<img src="i/prosecco.png" alt="Programming Securely with Cryptography" />
+</a></td>
+<td align="center">
+<a href="http://www.inria.fr" target="_blank">
+<img src="i/inria.png" alt="Institut National de Recherche en Informatique et Automatique" />
+</a></td>
+</tr></table>
+</div>
+
+</body>
+
+</html>
+

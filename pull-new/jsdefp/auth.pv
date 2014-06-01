@@ -1,0 +1,158 @@
+event Authorized(bitstring).
+event TokenIssued(bitstring).
+event AuthorizationAsked(bitstring).
+
+(*
+query client:bitstring; event(TokenIssued(client)).
+*)
+
+query client:bitstring; event(TokenIssued(client)) ==> event(AuthorizationAsked(client)).
+
+free num_1:bitstring.
+free str_15919241:bitstring.
+free str_1035747747:bitstring.
+free str_45715:bitstring.
+free str_52489747:bitstring.
+free str_737338002:bitstring.
+free str_525129801:bitstring.
+free str_48826788:bitstring.
+free str_411795018:bitstring.
+fun dataConst_727044511(bitstring,bitstring,bitstring):Params [data].
+fun dataConst_411795018(bitstring,bitstring):bitstring [data].
+fun dataConst_266836621(bitstring):Params [data].
+fun dataConst_525129801(bitstring,bitstring,bitstring):bitstring [data].
+fun dataConst_1180652(bitstring):Params [data].
+fun dataConst_52489747(bitstring):bitstring [data].
+fun authPath():Path.
+free host1:Host.
+
+fun serializeUri(Uri):bitstring [data].
+reduc forall u:Uri; parseUri(serializeUri(u))=u.
+fun sessionPair(bitstring,bitstring):bitstring [data].
+table clients(bitstring, bitstring).
+table serverSessions(Host, Cookie, bitstring).
+table user_auth(bitstring,bitstring,bitstring).
+fun hmac(bitstring,bitstring):bitstring.
+letfun gen_token() = new tok:bitstring; tok.
+
+let AuthUserAgent(b:Browser) =
+(
+(in (newPage(b),(p:Page, u:Uri, d:bitstring));
+if host(u) = host1 && path(u) = authPath() then
+let target = u in
+let dataConst_525129801(val_5,val_6,val_7) = d in
+out(pageClick(b),(p,target,httpPost(dataConst_266836621(val_7))))
+)
+).
+
+let AuthServerApp(host:Host, app:Path) =
+(
+  in(httpServerRequest, (url:Uri, headers:Headers, method:HttpRequest, corr:bitstring));
+  let uri(proto, =host, =authPath(), query_string) = url in
+  let cookie_jar = getCookie(headers) in
+  let cookiePair(session_cookie,path_cookie) = cookie_jar in
+  if protocol(url) = https() then
+  let dataConst_727044511(get_redirect_uri,get_client_id,get_response_type) = query_string in
+  (
+    if (get_response_type) = (str_15919241) then
+    (
+      get clients(=get_client_id,var_client_key) in
+      (
+        get serverSessions(=host, =session_cookie, sessionPair(str_1035747747,val_1)) in
+        if (val_1) = (str_45715) then
+        (
+          get serverSessions(=host, =session_cookie, sessionPair(str_737338002,val_3)) in
+          get user_auth(=val_3,=get_client_id,var_token) in
+          (
+            out(httpServerResponse, (url,httpRedirect(parseUri(dataConst_411795018(get_redirect_uri,var_token))),nullCookie(), corr));
+            event TokenIssued(get_client_id)
+          )
+          else
+          (
+            get serverSessions(=host, =session_cookie, sessionPair(str_737338002,val_4)) in
+            let var_auth_code = hmac(val_4,var_client_key) in
+            let httpPost(dataConst_266836621(post_auth_code)) = method in
+            (
+              if (post_auth_code) = (var_auth_code) then
+              (
+                event Authorized(get_client_id);
+                get serverSessions(=host, =session_cookie, sessionPair(str_737338002,val_8)) in
+                insert user_auth(val_8,get_client_id,gen_token());
+                out(httpServerResponse, (url,httpRedirect(parseUri(serializeUri(url))),nullCookie(), corr))
+              )
+              else
+              (
+                out(httpServerResponse, (url,httpError(),cookie_jar, corr));
+                0
+              )
+            )
+            else
+            (
+              event AuthorizationAsked(get_client_id);
+              out(httpServerResponse, (url,httpOk(dataConst_525129801(get_client_id,serializeUri(url),var_auth_code)),cookie_jar, corr))
+            )
+          )
+        )
+        else
+        (
+          out(httpServerResponse, (url,httpRedirect(parseUri(dataConst_52489747(serializeUri(url)))),nullCookie(), corr));
+          0
+        )
+      )
+      else
+      (
+        out(httpServerResponse, (url,httpError(),cookie_jar, corr));
+        0
+      )
+    )
+    else
+    (
+      out(httpServerResponse, (url,httpError(),cookie_jar, corr));
+      0
+    )
+  )
+  else
+  (
+    out(httpServerResponse, (url,httpError(),cookie_jar, corr));
+    0
+  )
+).
+
+free client_id:bitstring.
+free path_cookie:Cookie.
+free redirect_uri:Uri.
+free username:bitstring.
+free client_key:bitstring.
+
+process (
+  BrowserProcess() | Network() | HttpServer()
+  |
+  (
+(*   new client_key:bitstring; *)
+   insert clients(client_id, client_key);
+   new sk:privkey;
+   let pubk = pk(sk) in
+   insert serverIdentities(orig(https(),host1), pubk, sk, noxdr());
+   out(pub,pubk)
+  )
+  |
+  (
+   in(pub, b:Browser);
+   new p:Page;
+   new sid:Cookie;
+
+   insert serverSessions(host1, sid, sessionPair(str_737338002, username));
+   insert serverSessions(host1, sid, sessionPair(str_1035747747, str_45715));
+   let target = uri(https(), host1, authPath(), dataConst_727044511(serializeUri(redirect_uri),client_id,str_15919241)) in
+   insert cookies(b, orig(https(),host1), slash(), sid);
+   out(pageClick(b),(p,target,httpGet()))
+  )
+  |
+  !(
+   in(pub, b:Browser);
+   AuthUserAgent(b)
+  )
+  |
+  !(AuthServerApp(host1, authPath()))
+)
+

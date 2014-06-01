@@ -1,0 +1,3 @@
+[submodule "pull-new/djcl/sjcl-orig"]
+	path = pull-new/djcl/sjcl-orig
+	url = git@github.com:gdkar/sjcl.git

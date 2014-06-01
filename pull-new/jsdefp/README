@@ -1,0 +1,9 @@
+
+REQUIREMENTS TO BUILD:
+======================
+
+ - OCaml version 3.12 or newer
+ - Menhir including its extra library (libmenhir-ocaml-dev package on Debian)
+ - PCRE bindings for OCaml (libpcre-ocaml-dev)
+ - Ulex unicode tokenizer (ocaml-ulex)
+
