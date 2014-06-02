@@ -13,87 +13,54 @@ module.exports = (function(){
       }catch(e){}})(),
     o = "{", t = '"', c = "", i = 0,
     hex= "0123456789abcdef",
-    hex_= "0123456789ABCDEF",
     b64_="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/-_",
-    t_ = (function (a){
-      var s='return {',i=0,l=0;
+    list = (function (r){
+      var s="return ['",i=0,t="',{",c=""
+      for(;i<r;i++){
+        c = "\\u"+hex[(i>>12)&15]+hex[(i>>8)&15]+hex[(i>>4)&15]+hex[i&15];
+        s+= c; t+="'"+c+"':"+i+",";
+      }
+      s+=t+"}];";
+      return (new f(s)());
+    }),
+    utf8=list(0x10000),
+    ascii=list(256),
+    t_ = (function (a,r){
+      var s='return {',i=0,j=0,l=0,c="";
       a=""+a;l=a.length;
-      for(;i<l;i++){ s +="'"+a[i]+"':"+i+','}
+      for(;i<r;i++){
+        c = "\\u"+hex[(i>>12)&15]+hex[(i>>8)&15]+hex[(i>>4)&15]+hex[i&15];
+        for(j=0;j<l && ascii[0][i]!=a[j];j++);
+            if(ascii[0][i]=a[j]){ s +="'"+c+"':"+j+',';}
+            else{s+="'"+c+"':"+-1+",";}
+      }
       s += '};';
       return (new f(s)());
     }),
-    u_ = (function (){
-      var s="return '",i=0;
-      for(;i<65536;i++)
-        s+=("\\u"+hex[(i>>12)&15]+hex[(i>>8)&15]+hex[(i>>4)&15]+hex[i&15]);
-      s+="';";
-      return (new f(s)());
-    })(),
-    ut_ = (function(){
-      var s="return {",i=0;
-      for(;i<65536;i++)
-        s+=("'\\u"+hex[(i>>12)&15]+hex[(i>>8)&15]+hex[(i>>4)&15]+hex[i&15]+"':"+i+",");
-      s+="};";
-      return (new f(s)());
+    bt_ = t_(b64_,256),
+    ht_ = t_(hex,256),
 
-    })()
-    a_ = (function (){
-      var s="return '",i=0;
-      for(;i<256;i++)
-        s+="\\x"+hex[(i>>4)&15]+hex[i&15];
-      s+="';";
-      var res = (new f(s)());
-      return res;
-    })(),
-    at_ = (function (){
-      var s="return {",i=0;
-      for(;i<256;i++){
-        s+=("'\\x"+hex[(i>>4)&15]+hex[i&15]+"':"+i+",");
-      }
-      s+="};";
-      return new f(s)();
-    })(),
-     bt_ = (function (){
-      var s="return {",i=0;
-      for(;i<64;i++)
-        s+=("'"+b64_[i]+"':"+i+",");
-        s+="'-':62,'_':63};"
-      return new f(s)();
-    })(),
-
-
-/**
- * @namespace Encoding functions
- * @author Anonymized
- * @description
- * <p>Support for ASCII, UTF-8, Base64 and Hex encoding.</p>
- * <p>DJS is simply not good at encoding, because it lacks the
- * built-in functions to get the character code at a given offset
- * from a string (charCodeAt), and its inverse, String.fromCharCode.</p>
- *
- * <p>This means we have to use a literal object whose field names are
- * ASCII characters and values are the associated codes, and a string
- * containing every character sorted by code for the inverse operation.</p>
- *
- * <p>For UTF-8, such a table would be too large and instead, we use
- * binary search on the string containing all UTF-8 characters,
- * using the built in lexicographic order of JavaScript.
- * Since the complete UTF-8 alphabet is itself 200KB, it is loaded
- * from its own file, utf8.js. Loading this file is optional: without
- * it every non-ASCII character is treated like the null byte.</p>
- */
   encoding = {
-/** Hex alphabet. */
+  /** Hex alphabet. */
   hex: '0123456789abcdef',
-  hex_table: t_(hex),
-/** UTF-8 alphabet. Initially contains the null byte, actual value is in utf8.js */
-  ascii: a_,
-  ascii_table: at_,
+  hex_table: t_(hex,256),
+  ascii: ascii[0],
+  ascii_table: ascii[1],
+  /** UTF-8 alphabet. Initially contains the null byte, actual value is in utf8.js */
+  /*
+   * NOTE: this is wrong. like, very wrong. it's "UTF-8", except that that's not actually how 
+   * ECMAScript works. with high probability / on most implementations, you'll actually be
+   * dealing with unicode as UCS-2 / UTF-16. This means that the usae of the phrase "encoding"
+   * and "decoding" as expressed in the original djcl are somewhere in the vague middleground
+   * between sort-of-wrong and very-wrong. in particular, the table we generate ( of "UTF8" )
+   * actually contains the single-character values in the range 0-0xffff (i.e., the UCS-2 range.0
+   * but, like, whatever. fuck.
+   * 
+   */
+  utf8: utf8[0],
+  utf8_table: utf8[1],
 
-  utf8: u_,
-  utf8_table: ut_,
-
-/** Base64 alphabet. Is missing the last two characters to support URL style */
+  /** Base64 alphabet. Is missing the last two characters to support URL style */
   base64: b64_,
   base64_table: bt_,
   
@@ -123,6 +90,7 @@ module.exports = (function(){
   ucs2_encode: function(s)
   {
     var res="",i=0;
+    if(s.length&1){s+='\x00';}
     for(i=0;i<s.length;i+=2){
       res += this.utf8[(256*this.a2b(s[i+1])+this.a2b(s[i]))&0xffff];
     }
@@ -164,8 +132,8 @@ module.exports = (function(){
     c = (c<<8)+this.a2b(s[i]);b+=8;
     for(;b>=6;b-=6){res+=this.base64[((c>>(b-6))&63)];}
    }
-   if(b>0)c<<=8;b+=8;
-   for(;b>=6;b-=6){res+=this.base64[((c>>(b-6))&63)];}
+   if(b>0){c<<=8;b+=8;}
+  if  (b>=6){res+=this.base64[((c>>(b-6))&63)];}
     while(res.length%4) res+=!url ? '=' : '.';
    return res;
   },
@@ -178,17 +146,12 @@ module.exports = (function(){
   {
    var s = s+'', res = "", buf = [0,0,0,0],
        i = 0, x = '', c = 0,l=s.length,b=0;
-   console.log(l);
-   for(;i<l&&this.b64c(s[i])!=null;i++){
+   for(;i<l&&this.b64c(s[i])!=-1;i++){
       c = (c<<6)+this.b64c(s[i]);b+=6;
    for(;b>=8;b-=8){res+=this.b2a((c>>(b-8))&255);}
    }
    return res;
- }
-  };
- return encoding;
-})();
-
+ },
 
 /** Encode a raw ASCII string back into a JavaScript string
   * @param {string} input ASCII
@@ -231,10 +194,10 @@ module.exports = (function(){
   * @param {string} input JavaScript string (containing unicode characters)
   * @returns {string} decoded ASCII string
   */
-/*  utf8_decode: function(s)
+  utf8_decode: function(s)
   {
    var res = "", i = 0, c = 0, s = s+'',
-       x = this.b2a(0);
+       x = '\x00';
 
    for(i=0; i<s.length; i++)
    {
@@ -242,10 +205,17 @@ module.exports = (function(){
     if(c < 128) res += x;
     else if(c < 2048)
      res += this.b2a((c>>6)|192)+this.b2a((c&63)|128);
-    else
+    else if(c < 65536)
      res += this.b2a((c>>12)|224)+this.b2a(128|(c>>6)&63)+this.b2a(128|c&63);
+    else{
+     res += this.b2a((c>>18)|252)+this.b2a(128|(c>>12)&63)+this.b2a((128|(c>>6)&63))+this.b2a(128|c&63);
+    }
    }
 
    return res;
-  },*/
+  }
+  };
+ return encoding;
+})();
+
 
